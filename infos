@@ -1,0 +1,16 @@
+REPO : 
+
+
+Dans un terminal aller dans dossier avec cd :
+Puis, CLI (commande Line Interface), taper : code . (ça ouvre VScode)
+index.html : le serveur l'ouvre en premier 
+
+extension : live server preview aussi pour voir la page à côté mais pas l'inspecteur 
+
+
+Chris CHEVALIER
+10:58
+https://github.com/Chris-CHEVALIER/my-movie-studi
+
+
+DATABASE_URL = "mysql://root:root@127.0.0.1:3306/allo_cine"
