@@ -1,6 +1,6 @@
 <?php
 
-require('./config/DotEnv.php'); 
+require_once('./config/DotEnv.php'); 
 
 class MovieController {
 
@@ -53,6 +53,7 @@ class MovieController {
     // Suppression d'un film 
     public function deleteMovie(Movie $movie): void{
 
+        
     }
 
 }

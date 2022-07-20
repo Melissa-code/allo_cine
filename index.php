@@ -13,12 +13,19 @@
 <body>
   <?php
     require('./Entity/Movie.php');
+    require('./Entity/Category.php');
     require('./Controller/MovieController.php');
+    require('./Controller/CategoryController.php');
 
-  $movieController = new MovieController(); 
+  $movieController = new MovieController();
   $movies = $movieController->getAll(); 
-  var_dump($movies); 
+  // echo '<pre>';
+  // var_dump($movies);
+  // echo '<br/>.<br/>'; 
 
+  $categoryController = new CategoryController(); 
+  $categories = $categoryController->getAll(); 
+  // var_dump($categories); 
 
     // $movie = new Movie(
     //   [
@@ -80,10 +87,12 @@
     <?php
 
     ?>
+      <div class="title p-3">
         <h1>Allo Ciné</h1>
         <h3>Découvrez et partagez des films! </h3>
-        
-        <div>
+      </div>
+
+        <div class="p-3">
             <a class="button-css" href="./views/create.html">Publier un nouveau film</a>
         </div>
 
@@ -91,15 +100,24 @@
 
         <!-- film 1 Avatar -->
         <?php
-        foreach($movies as $movie): ?> 
+        foreach($movies as $movie): 
+        
+          $category = $categoryController->get($movie->getCategorie_id());
+        ?> 
           
+            
             <div class="card m-3" style="width: 18rem;">
-              <img src="https://fr.web.img6.acsta.net/medias/nmedia/18/78/95/70/19485155.jpg" class="card-img-top" alt="affiche Avatar">
+              <img src="<?= $movie->getImageUrl_film() ?>" class="card-img-top" alt="affiche Avatar">
               <div class="card-body">
                 <h5 class="card-title"><?= $movie->getTitre_film(); ?></h5>
+                <p class="card-subtitle mb-2 text-muted"><?= $movie->getDateSortie_film()?> </p>
+                <p class="card-subtitle mb-2 text-muted"><?= $movie->getRealisateur() ?> </p>
                 <h6 class="card-subtitle mb-2 text-muted"><?= $movie->getCategorie_id()?></h6>
-                <div class="card-text"><?= $movie->getDescription_film()?></div>
-
+                <p class="card-text"><?= $movie->getDescription_film()?></p>
+                
+                <!-- Footer de la carte qui affiche la catégorie du film  -->
+                <footer class="blockquote-footer" style="color:<?= $category->getCouleur_categorie() ?>"><?= $category->getNom_categorie() ?></footer>
+               
                 <div class="mt-2">
                   <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="modifier">
                     <img src="./img/edit.svg" alt="bouton modifier" style="width: 20px">
