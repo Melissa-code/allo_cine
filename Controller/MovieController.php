@@ -1,6 +1,6 @@
 <?php
 
-require_once('./config/DotEnv.php'); 
+// require_once('./config/DotEnv.php'); 
 
 class MovieController {
 
@@ -41,19 +41,29 @@ class MovieController {
     }
 
     // création d'un film 
-    public function createMovie(Movie $newMovie): void{
-
+    public function create(Movie $newMovie): void{
+        $req =$this->pdo->prepare('INSERT INTO films (titre_film, description_film, imageUrl_film, dateSortie_film, categorie_id, realisateur) VALUES (:titre_film, :description_film, :imageUrl_film, :dateSortie_film, :categorie_id, :realisateur)');
+        $req->bindValue(":titre_film", $newMovie->getTitre_film(), PDO::PARAM_STR);
+        $req->bindValue(":description_film", $newMovie->getDescription_film(), PDO::PARAM_STR);
+        $req->bindValue(":imageUrl_film", $newMovie->getImageUrl_film(), PDO::PARAM_STR);
+        $req->bindValue(":dateSortie_film", $newMovie->getDateSortie_film(), PDO::PARAM_STR);
+        $req->bindValue(":categorie_id", $newMovie->getCategorie_id(), PDO::PARAM_INT);
+        $req->bindValue(":realisateur", $newMovie->getRealisateur(), PDO::PARAM_STR);
+        $req->execute();
     }
 
     // Modification d'un film 
-    public function updateMovie(Movie $movie): void{
+    public function update(Movie $movie): void{
 
     }
 
     // Suppression d'un film 
-    public function deleteMovie(Movie $movie): void{
+    public function delete(int $id_film) {
 
-        
+        $req = $this->pdo->prepare('DELETE FROM films WHERE id_film = :id_film'); 
+        $req->bindParam(':id_film', $id_film, PDO::PARAM_INT); 
+        $req->execute();
     }
+    
 
 }

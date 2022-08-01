@@ -28,6 +28,6 @@
 
 
     $movieController = new MovieController();
-    $movieController->deleteMovie($_GET["id_film"]);
+    $movieController->delete($_GET["id_film"]);
 
     echo "<script> window.location='../index.php'</script>";

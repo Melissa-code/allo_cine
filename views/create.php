@@ -15,31 +15,17 @@
         <!-- Barre de navigation -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light ">
           <div class="container-fluid">
-            <span><img class="logo m-3" src="../img/logo.png" alt="logo Allo Ciné"><a class="navbar-brand" href="index.html">Allo Ciné</a></span>
+            <span><img class="logo m-3" src="../img/logo.png" alt="logo Allo Ciné"><a class="navbar-brand" href="../index.php">Allo Ciné</a></span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link" aria-current="page" href="index.html">Accueil</a>
+                  <a class="nav-link" aria-current="page" href="../index.php">Accueil</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link active" href="./views/create.html">Publier un film</a>
-                </li>
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Dropdown
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                  </ul>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                  <a class="nav-link active" href="create.php">Publier un film</a>
                 </li>
               </ul>
               <form class="d-flex">
@@ -52,46 +38,81 @@
 
     </header>
 
+    <?php
+
+      if (!function_exists('str_contains')) {
+        function str_contains(string $haystack, string $needle): bool
+        {
+            return '' === $needle || false !== strpos($haystack, $needle);
+        }
+      }
+  
+      function loadClass(string $class)
+      {
+          if($class === "DotEnv") {
+            require_once "../config/$class.php";
+          }
+          else if (str_contains($class, "Controller")) {
+              require_once "../Controller/$class.php";
+          } else {
+              require_once "../Entity/$class.php";
+          } 
+      }
+  
+      spl_autoload_register("loadClass");
+
+      $categoryController = new CategoryController();
+      $categories = $categoryController->getAll();
+      //print_r($categories); 
+  
+      if($_POST) {
+        $movieController = new MovieController();
+        $newMovie = new Movie($_POST); 
+        $movieController->create($newMovie); 
+      }
+?>
 
     <main>
 
-
-
         <h3>Publier un nouveau film</h3>
-  
 
-        <form method="post" class="container-fluid w-50">
+        <form method="post"  class="container-fluid w-50">
             <div>
-                <label for="title" class="form-label">Titre :</label>
-                <input type="text" name="title" id="title" placeholder="Titre du film" class="form-control">
+                <label for="titre_film" class="form-label">Titre :</label>
+                <input type="text" name="titre_film" id="titre_film" placeholder="Titre du film" class="form-control">
             </div>
 
             <div>
-                <label for="synopsis" class="form-label">Synopsis :</label>
-                <textarea name="synopsis" id="synopsis" placeholder="Résumé du film" rows="10" class="form-control"></textarea> 
+                <label for="description_film" class="form-label">Synopsis :</label>
+                <textarea name="description_film" id="description_film" placeholder="Résumé du film" rows="10" class="form-control"></textarea> 
             </div>
 
             <div>
-                <label for="imageUrl" class="form-label">Image :</label>
-                <input type="url" name="imageUrl" placeholder="URL de l'image du film" class="form-control">
+                <label for="imageUrl_film" class="form-label">Image :</label>
+                <input type="url" name="imageUrl_film" id="imageUrl_film" placeholder="URL de l'image du film" class="form-control">
             </div>
             <div>
-                <label for="director" class="form-label">Réalisateur :</label>
-                <input type="text" id="director" name="director" placeholder="Réalisateur du film" class="form-control">
-            </div>
-
-            <div>
-                <label for="releaseDate" class="form-label">Date de sortie :</label>
-                <input type="date" name="releaseDate" id="releaseDate" placeholder="Date de sortie" class="form-control">
+                <label for="realisateur" class="form-label">Réalisateur :</label>
+                <input type="text" name="realisateur" id="realisateur" placeholder="Réalisateur" class="form-control">
             </div>
 
             <div>
-                <label for="category" class="form-label">Catégorie :</label>
-                <select name="categoryId" id="category" class="form-control">
-                    <option value="">Sélectionner une catégorie</option>
-                    <option value="1">Horreur</option>
-                    <option value="2">Comédie</option>
-                    <option value="3">Drame</option>
+                <label for="dateSortie_film" class="form-label">Date de sortie :</label>
+                <input type="date" name="dateSortie_film" id="dateSortie_film" placeholder="Date de sortie" class="form-control">
+            </div>
+
+            <div>
+                <label for="categorie_id" class="form-label">Catégorie :</label>
+                
+                <select name="categorie_id" id="categorie_id" class="form-control">
+                  <option value="">Sélectionner une catégorie</option>
+
+                  <?php
+
+                      foreach($categories as $category) : ?>
+                        <option value="<?= $category->getId_categorie() ?>"><?= $category->getNom_categorie() ?></option>
+                      <?php endforeach ?>
+                  
                 </select>
             </div>
 

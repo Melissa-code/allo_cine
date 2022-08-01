@@ -1,6 +1,6 @@
 <?php
 
-require_once('./config/DotEnv.php'); 
+//require_once('../config/DotEnv.php'); 
 
 class CategoryController {
 
@@ -23,7 +23,7 @@ class CategoryController {
     }
 
 
-    // renvoie un tab de films
+    // renvoie un tab d'objets categories
     public function getAll(): array {
 
         $categories = []; 
@@ -36,29 +36,34 @@ class CategoryController {
         return $categories;
     }
 
-    // renvoie un film 
-    public function get(int $id_categorie): Category{
+    // renvoie un objet catégorie 
+    public function get(int $id_categorie): Category {
+
         $req = $this->pdo->prepare('SELECT * FROM categorie WHERE id_categorie = :id_categorie');
         $req->bindParam(":id_categorie", $id_categorie, PDO::PARAM_INT);
         $req->execute();
         $data = $req->fetch(); 
         $category = new Category($data); 
+
         return $category;
-       
     }
 
-    // création d'un film 
-    public function createCategory(Category $newCategory): void{
+    // création 
+    public function create(Category $newCategory): void{
+
+        $req =$this->pdo->prepare('INSERT INTO categorie (nom_categorie, couleur_categorie) VALUES (:nom_categorie, :couleur_categorie)');
+        $req->bindParam(":nom_categorie", $newCategory->getNom_categorie(), PDO::PARAM_STR);
+        $req->bindParam(":couleur_categorie", $newCategory->getCouleur_categorie(), PDO::PARAM_STR);
+        $req->execute();
+    }
+
+    // Modification 
+    public function update(Category $Category): void{
 
     }
 
-    // Modification d'un film 
-    public function updateCategory(Category $Category): void{
-
-    }
-
-    // Suppression d'un film 
-    public function deleteCategory(Category $Category): void{
+    // Suppression
+    public function delete(Category $Category): void{
 
     }
 

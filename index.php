@@ -12,10 +12,35 @@
 
 <body>
   <?php
-    require('./Entity/Movie.php');
-    require('./Entity/Category.php');
-    require('./Controller/MovieController.php');
-    require('./Controller/CategoryController.php');
+
+    
+    // Pour pouvoir utiliser str_contains introduit dans PHP 8
+    if (!function_exists('str_contains')) {
+      function str_contains(string $haystack, string $needle): bool
+      {
+          return '' === $needle || false !== strpos($haystack, $needle);
+      }
+    }
+
+    // Pour téléchargement des classes au lieu de multiples require
+    function loadClass(string $class)
+    {
+        if ($class === "DotEnv") {
+            require_once "./config/$class.php";
+        } else if (str_contains($class, "Controller")) {
+            require_once "./Controller/$class.php";
+        } else {
+            require_once "./Entity/$class.php";
+        }
+    }
+
+    spl_autoload_register("loadClass");
+
+    // require_once('./config/DotEnv.php'); 
+    // require('./Entity/Movie.php');
+    // require('./Entity/Category.php');
+    // require('./Controller/MovieController.php');
+    // require('./Controller/CategoryController.php');
 
   $movieController = new MovieController();
   $movies = $movieController->getAll(); 
@@ -24,7 +49,7 @@
   // echo '<br/>.<br/>'; 
 
   $categoryController = new CategoryController(); 
-  $categories = $categoryController->getAll(); 
+  //$categories = $categoryController->getAll(); 
   // var_dump($categories); 
 
     // $movie = new Movie(
@@ -45,31 +70,17 @@
         <!-- Barre de navigation -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light ">
             <div class="container-fluid">
-              <span><img class="logo m-3" src="./img/logo.png" alt="logo Allo Ciné"><a class="navbar-brand" href="index.html">Allo Ciné</a></span>
+              <span><img class="logo m-3" src="./img/logo.png" alt="logo Allo Ciné"><a class="navbar-brand" href="index.php">Allo Ciné</a></span>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="index.html">Accueil</a>
+                    <a class="nav-link active" aria-current="page" href="index.php">Accueil</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link " href="./views/create.html">Publier un film</a>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Dropdown
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    <a class="nav-link " href="./views/create.php">Publier un film</a>
                   </li>
                 </ul>
                 <form class="d-flex">
@@ -84,16 +95,14 @@
 
     <main>
 
-    <?php
 
-    ?>
       <div class="title p-3">
         <h1>Allo Ciné</h1>
         <h3>Découvrez et partagez des films! </h3>
       </div>
 
         <div class="p-3">
-            <a class="button-css" href="./views/create.html">Publier un nouveau film</a>
+            <a class="button-css" href="./views/create.php">Publier un nouveau film</a>
         </div>
 
         <section class="container d-flex justify-content-center mt-4 ">
@@ -123,7 +132,7 @@
                     <img src="./img/edit.svg" alt="bouton modifier" style="width: 20px">
                   </button>
                   
-                  <a href="#" class="btn btn-danger">
+                  <a href="./views/delete.php?id_film=<?= $movie->getId_film() ?>" class="btn btn-danger">
                     <img src="./img/trash.svg" alt="bouton supprimer" style="width: 20px" data-bs-toggle="tooltip" data-bs-placement="top" title="supprimer">
                   </a>
                 </div>
@@ -132,40 +141,14 @@
         
         <?php endforeach ?>
 
-
-<!-- 
-       
-        <div class="card m-3" style="width: 18rem;">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgA13CwSXM1k2yx2WGeLVXksg03vzvSrRpr5ZvXrZRX2d6NPlb" class="card-img-top" alt="affiche Titanic">
-          <div class="card-body">
-            <h5 class="card-title">Titanic</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Drame</h6>
-            <div class="card-text">Film dans un bateau.</div>
-
-            <div class="mt-2">
-            <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="modifier">
-              <img src="./img/edit.svg" alt="bouton modifier" style="width: 20px">
-            </button>
-             
-            <a href="#" class="btn btn-danger">
-              <img src="./img/trash.svg" alt="bouton supprimer" style="width: 20px" data-bs-toggle="tooltip" data-bs-placement="top" title="supprimer">
-            </a>
-          </div>
-          </div>
-        </div> -->
-
-      </section>
-
-
+        </section>
     </main>
     
-    <footer>
-
-    </footer>
-
+    <footer></footer>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="./js/script.js"></script>
+
   </body>
 </html>
