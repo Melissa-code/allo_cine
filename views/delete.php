@@ -13,7 +13,6 @@
 
    // Pour téléchargement des classes au lieu de multiples require
    function loadClass(string $class) {
-
     if($class==="DotEnv"){
       require_once "../config/$class.php";
     }

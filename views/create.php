@@ -69,6 +69,7 @@
         $movieController = new MovieController();
         $newMovie = new Movie($_POST); 
         $movieController->create($newMovie); 
+        echo "<script> window.location='../index.php'</script>";
       }
 ?>
 

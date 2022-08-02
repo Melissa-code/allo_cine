@@ -13,7 +13,7 @@
 <body>
   <?php
 
-    
+    session_start(); 
     // Pour pouvoir utiliser str_contains introduit dans PHP 8
     if (!function_exists('str_contains')) {
       function str_contains(string $haystack, string $needle): bool
@@ -74,8 +74,9 @@
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
+
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
                   <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="index.php">Accueil</a>
                   </li>
@@ -83,22 +84,33 @@
                     <a class="nav-link " href="./views/create.php">Publier un film</a>
                   </li>
                 </ul>
-                <form class="d-flex">
+
+                <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                  <li class="nav-item">
+                    <a class="nav-link " href="./views/register.php">S'inscrire</a>
+                  </li>
+
+                  <li class="nav-item">
+                    <?=  $_SESSION ? '<a class="nav-link " href="./views/logout.php">Se déconnecter</a>' : '<a class="nav-link " href="./views/login.php">Se connecter</a>' ?>
+                  </li>
+
+                </ul>
+                <!-- <form class="d-flex">
                   <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                   <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                </form> -->
               </div>
+
             </div>
           </nav>
-
     </header>
 
     <main>
 
-
       <div class="title p-3">
         <h1>Allo Ciné</h1>
         <h3>Découvrez et partagez des films! </h3>
+        <?= $_SESSION && $_SESSION["username_user"] ? " <span>Bienvenue {$_SESSION['username_user']}</span>" : "" ?>
       </div>
 
         <div class="p-3">
@@ -112,25 +124,26 @@
         foreach($movies as $movie): 
         
           $category = $categoryController->get($movie->getCategorie_id());
+          $dateSortie_film = new DateTime($movie->getDateSortie_film())
         ?> 
           
             
             <div class="card m-3" style="width: 18rem;">
-              <img src="<?= $movie->getImageUrl_film() ?>" class="card-img-top" alt="affiche Avatar">
+              <img src="<?= $movie->getImageUrl_film() ?>" class="card-img-top" alt="affiche Avatar" style="height: 50vh">
               <div class="card-body">
                 <h5 class="card-title"><?= $movie->getTitre_film(); ?></h5>
-                <p class="card-subtitle mb-2 text-muted"><?= $movie->getDateSortie_film()?> </p>
+                <p class="card-subtitle mb-2 text-muted"><?= $dateSortie_film->format('d/m/Y') ?> </p>
                 <p class="card-subtitle mb-2 text-muted"><?= $movie->getRealisateur() ?> </p>
                 <h6 class="card-subtitle mb-2 text-muted"><?= $movie->getCategorie_id()?></h6>
-                <p class="card-text"><?= $movie->getDescription_film()?></p>
+                <p class="card-text" style="height: 20vh"><?= $movie->getDescription_film()?></p>
                 
                 <!-- Footer de la carte qui affiche la catégorie du film  -->
                 <footer class="blockquote-footer" style="color:<?= $category->getCouleur_categorie() ?>"><?= $category->getNom_categorie() ?></footer>
                
                 <div class="mt-2">
-                  <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="modifier">
+                  <a href="./views/update.php?id_film=<?= $movie->getId_film() ?>" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="modifier">
                     <img src="./img/edit.svg" alt="bouton modifier" style="width: 20px">
-                  </button>
+                  </a>
                   
                   <a href="./views/delete.php?id_film=<?= $movie->getId_film() ?>" class="btn btn-danger">
                     <img src="./img/trash.svg" alt="bouton supprimer" style="width: 20px" data-bs-toggle="tooltip" data-bs-placement="top" title="supprimer">
